@@ -3,7 +3,7 @@
 #!/bin/bash
 
 ROOT_UID=0
-THEME_DIR="/usr/share/sddm/themes"
+THEME_DIR="$PWD/usr/share/sddm/themes"
 REO_DIR="$(cd $(dirname $0) && pwd)"
 
 MAX_DELAY=20                                  # max delay for user to enter root password
@@ -37,24 +37,10 @@ prompt () {
   esac
 }
 
-# Checking for root access and proceed if it is present
-if [ "$UID" -eq "$ROOT_UID" ]; then
+# Install process
+
   prompt -i "\n * Install WhiteSur in ${THEME_DIR}... "
   cp -r "${REO_DIR}/WhiteSur" "${THEME_DIR}"
   # Success message
   prompt -s "\n * All done!"
-else
-  # Error message
-  prompt -e "\n [ Error! ] -> Run me as root ! "
-
-  # persisted execution of the script as root
-  read -p "[ Trusted ] Specify the root password : " -t${MAX_DELAY} -s
-  [[ -n "$REPLY" ]] && {
-    sudo -S <<< $REPLY $0
-  } || {
-    clear
-    prompt -i "\n Operation canceled by user, Bye!"
-    exit 1
-  }
-fi
 
